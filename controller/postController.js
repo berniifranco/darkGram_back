@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { post } = require('../routes/postRoutes');
 const PostModel = mongoose.model("postModel");
 
 const postController = {
@@ -15,6 +16,46 @@ const postController = {
             })
             .catch((err) => {
                 console.log(err);
+            })
+    },
+    //All users posts
+    allPost: (req, res) => {
+        PostModel.find()
+            .populate("author", "_id fullname profileImg")
+            .then((dbPosts) => {
+                res.status(200).json({post: dbPosts})
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    },
+    //All post only user logged in
+    myAllPost: (req, res) => {
+        PostModel.find({author: req.user._id})
+            .populate("author", "_id fullname profileImg")
+            .then((dbPosts) => {
+                res.status(200).json({post: dbPosts})
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    },
+    deletePost: (req, res) => {
+        PostModel.findOne({_id: req.params.postId})
+            .populate("author", "_id")
+            .exec((error, postFound) => {
+                if (error || !postFound) {
+                    return res.status(400).json({error: "post does not exist"});
+                };
+                if (postFound.author._id.toString() == req.user._id.toString()) {
+                    postFound.remove()
+                    .then((data) => {
+                        res.status(200).json({result: data})
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    })
+                }
             })
     }
 };
