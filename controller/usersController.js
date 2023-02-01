@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const userModel = mongoose.model('userModel');
+const {JWT_SECRET} = require('../config');
 
 const usersController = {
     signup: (req, res) => {
@@ -47,7 +49,9 @@ const usersController = {
                 bcrypt.compare(password, userInDb.password)
                     .then((didMatch) => {
                         if (didMatch) {
-                            res.status(201).json({result: "User login succefully!"});
+                            const jwtToken = jwt.sign({_id: userInDb._id}, JWT_SECRET);
+                            const userInfo = {"email": userInDb.email, "fullName": userInDb.fullName};
+                            res.status(201).json({result: {token: jwtToken, user: userInfo}});
                         } else {
                             return res.status(500).json({error: "Invalid credentials"});
                         }
