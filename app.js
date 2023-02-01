@@ -5,6 +5,19 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const {MONGODB_URL} = require('./config');
+
+mongoose.connect(MONGODB_URL);
+
+mongoose.connection.on('connected', () => {
+  console.log('DB conected');
+});
+
+mongoose.connection.on('error', (error) => {
+  console.log('Some error while connecting to DB');
+});
+
+const userModel = require('./models/userModel');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
