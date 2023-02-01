@@ -68,7 +68,7 @@ const postController = {
             if (error) {
                 return res.status(400).json({error: error})
             } else {
-                res.json(result)
+                return res.status(200).json(result)
             }
           })
     }
