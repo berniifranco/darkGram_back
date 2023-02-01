@@ -57,6 +57,20 @@ const postController = {
                     })
                 }
             })
+    },
+    like: (req, res) => {
+        PostModel.findOneAndUpdate({_id: req.body.postId}, {
+            $push: {likes: req.user._id}
+        }, {
+            new: true //return updated record
+        }).populate("author", "_id fullName")
+          .exec((error, result) => {
+            if (error) {
+                return res.status(400).json({error: error})
+            } else {
+                res.json(result)
+            }
+          })
     }
 };
 
