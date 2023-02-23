@@ -10,5 +10,7 @@ router.get('/myallposts',protected, postController.myAllPost);
 
 router.delete('/deletepost/:postId',protected, postController.deletePost);
 router.put('/like', protected, postController.like);
+router.put('/unlike', protected, postController.unlike);
+router.put('/comments', protected, postController.comment);
 
 module.exports = router;

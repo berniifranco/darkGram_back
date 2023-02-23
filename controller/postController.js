@@ -71,6 +71,38 @@ const postController = {
                 return res.status(200).json(result)
             }
           })
+    },
+    unlike: (req, res) => {
+        PostModel.findOneAndUpdate({_id: req.body.postId}, {
+            $pull: {likes: req.user._id}
+        }, {
+            new: true //return updated record
+        }).populate("author", "_id fullName")
+          .exec((error, result) => {
+            if (error) {
+                return res.status(400).json({error: error})
+            } else {
+                return res.status(200).json(result)
+            }
+          })
+    },
+    comment: (req, res) => {
+
+        const comment = { commentText: req.body.commentText, commentedBy: req.user._id }
+
+        PostModel.findOneAndUpdate({_id: req.body.postId}, {
+            $push: {comments: comment}
+        }, {
+            new: true //return updated record
+        }).populate("comments.commentedBy", "_id fullName") //comment owner
+            .populate("author", "_id fullName") //post owner
+            .exec((error, result) => {
+            if (error) {
+                return res.status(400).json({error: error})
+            } else {
+                return res.status(200).json(result)
+            }
+          })
     }
 };
 

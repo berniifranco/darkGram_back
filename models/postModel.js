@@ -16,6 +16,12 @@ const postSchema = new mongoose.Schema({
             ref: "userModel"
         }
     ],
+    comments: [
+        {
+            commentText: String,
+            commentedBy: { type: ObjectId, ref: "userModel" }
+        }
+    ],
     image: {
         type: String,
         required: true
