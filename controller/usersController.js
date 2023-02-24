@@ -50,7 +50,7 @@ const usersController = {
                     .then((didMatch) => {
                         if (didMatch) {
                             const jwtToken = jwt.sign({_id: userInDb._id}, JWT_SECRET);
-                            const userInfo = {"email": userInDb.email, "fullName": userInDb.fullName};
+                            const userInfo = {"email": userInDb.email, "fullName": userInDb.fullName, "_id": userInDb._id};
                             res.status(201).json({result: {token: jwtToken, user: userInfo}});
                         } else {
                             return res.status(500).json({error: "Invalid credentials"});
